@@ -49,10 +49,13 @@ class InterestCalculatorSuite extends FunSuite {
   test("simpleInterest: zero principal yields zero interest".fail) { ??? }
 
   // TEST: zero rate yields zero interest
-  // Purpose:  A 0% rate means no money is earned regardless of principal or time.
+  /* Purpose: A 0% rate means no money is earned regardless of principal or
+   * time. */
   // Setup:    principal = 1000, annualRatePct = 0, years = 5
   // Assert:   result == BigDecimal(0)
-  test("simpleInterest: zero rate yields zero interest".fail) { ??? }
+  test("simpleInterest: zero rate yields zero interest".fail) {
+    ???
+  }
 
   // TEST: known values produce expected interest
   // Purpose:  Spot-check the formula P × r × t with hand-computed reference.
@@ -63,13 +66,14 @@ class InterestCalculatorSuite extends FunSuite {
   // TEST: interest scales linearly with years
   // Purpose:  Simple interest is a linear function of time; doubling years
   //           must double the interest.
-  // Setup:    Compute for years = 1 and years = 2 with identical principal/rate.
+  // Setup: Compute for years = 1 and years = 2 with identical principal/rate.
   // Assert:   interest(years=2) == interest(years=1) * 2
   test("simpleInterest: interest scales linearly with years".fail) { ??? }
 
   // TEST: interest scales linearly with principal
   // Purpose:  Doubling the principal must double the interest.
-  // Setup:    Compute for principal = 500 and principal = 1000 with same rate/years.
+  /* Setup: Compute for principal = 500 and principal = 1000 with same
+   * rate/years. */
   // Assert:   interest(principal=1000) == interest(principal=500) * 2
   test("simpleInterest: interest scales linearly with principal".fail) { ??? }
 
@@ -79,35 +83,45 @@ class InterestCalculatorSuite extends FunSuite {
 
   // TEST: zero principal yields zero compound interest
   // Purpose:  P = 0 must return 0 under any rate/compounding schedule.
-  // Setup:    principal = 0, annualRatePct = 6, years = 5, compoundsPerYear = 12
-  // Assert:   result == BigDecimal(0)  (or within floating-point tolerance of 0)
-  test("compoundInterest: zero principal yields zero compound interest".fail) { ??? }
+  // Setup: principal = 0, annualRatePct = 6, years = 5, compoundsPerYear = 12
+  // Assert: result == BigDecimal(0) (or within floating-point tolerance of 0)
+  test("compoundInterest: zero principal yields zero compound interest".fail) {
+    ???
+  }
 
   // TEST: zero rate yields zero compound interest
   // Purpose:  (1 + 0/n)^(nt) = 1 for any n and t, so interest = P*1 - P = 0
-  // Setup:    principal = 2000, annualRatePct = 0, years = 10, compoundsPerYear = 12
+  /* Setup: principal = 2000, annualRatePct = 0, years = 10, compoundsPerYear =
+   * 12 */
   // Assert:   result ≈ 0.0 (within tolerance)
   test("compoundInterest: zero rate yields zero compound interest".fail) { ??? }
 
   // TEST: annual compounding matches known reference value
-  // Purpose:  With compoundsPerYear = 1, the formula simplifies to P(1+r)^t − P.
+  // Purpose: With compoundsPerYear = 1, the formula simplifies to P(1+r)^t − P.
   //           Hand-verify: 1000 × (1.05)^2 − 1000 = 102.50
-  // Setup:    principal = 1000, annualRatePct = 5, years = 2, compoundsPerYear = 1
+  // Setup: principal = 1000, annualRatePct = 5, years = 2, compoundsPerYear = 1
   // Assert:   result ≈ 102.50 (within tolerance 0.01)
-  test("compoundInterest: annual compounding matches known reference value".fail) { ??? }
+  test(
+    "compoundInterest: annual compounding matches known reference value".fail
+  ) { ??? }
 
   // TEST: monthly compounding produces more interest than annual compounding
-  // Purpose:  More frequent compounding always yields more interest (for rate > 0).
+  /* Purpose: More frequent compounding always yields more interest (for rate >
+   * 0). */
   // Setup:    Same principal/rate/years; compare compoundsPerYear = 1 vs 12.
   // Assert:   monthly result > annual result
-  test("compoundInterest: monthly compounding yields more than annual".fail) { ??? }
+  test("compoundInterest: monthly compounding yields more than annual".fail) {
+    ???
+  }
 
   // TEST: compound interest is always >= simple interest (rate > 0, years > 1)
   // Purpose:  Compounding re-invests earned interest; simple interest does not.
   //           So compound >= simple for all valid positive inputs when years > 1.
   // Setup:    Compute both for same principal = 1000, rate = 7, years = 5.
   // Assert:   compoundInterest(...) >= simpleInterest(...)
-  test("compoundInterest: always >= simpleInterest for same parameters".fail) { ??? }
+  test("compoundInterest: always >= simpleInterest for same parameters".fail) {
+    ???
+  }
 
   // --------------------------------------------------------------------------
   // effectiveAnnualRate
@@ -123,17 +137,23 @@ class InterestCalculatorSuite extends FunSuite {
   // Purpose:  When compoundsPerYear = 1, EAR equals the nominal rate exactly.
   // Setup:    nominalRatePct = 6, compoundsPerYear = 1
   // Assert:   result ≈ 6.0
-  test("effectiveAnnualRate: annual compounding leaves nominal rate unchanged".fail) { ??? }
+  test(
+    "effectiveAnnualRate: annual compounding leaves nominal rate unchanged".fail
+  ) { ??? }
 
   // TEST: EAR is always >= nominal rate for compoundsPerYear > 1
   // Purpose:  More frequent compounding always increases the effective rate.
   // Setup:    nominalRatePct = 6, compoundsPerYear = 12
   // Assert:   result > 6.0
-  test("effectiveAnnualRate: EAR exceeds nominal rate when compoundsPerYear > 1".fail) { ??? }
+  test(
+    "effectiveAnnualRate: EAR exceeds nominal rate when compoundsPerYear > 1".fail
+  ) { ??? }
 
   // TEST: EAR increases as compounding frequency increases
   // Purpose:  Daily compounding should produce a higher EAR than monthly.
   // Setup:    nominalRatePct = 5; compare compoundsPerYear = 12 vs 365.
   // Assert:   EAR(365) > EAR(12)
-  test("effectiveAnnualRate: higher compounding frequency produces higher EAR".fail) { ??? }
+  test(
+    "effectiveAnnualRate: higher compounding frequency produces higher EAR".fail
+  ) { ??? }
 }

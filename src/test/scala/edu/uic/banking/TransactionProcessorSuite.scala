@@ -1,7 +1,7 @@
 package edu.uic.banking
 
 import munit.FunSuite
-import org.scalamock.scalatest.MockFactory
+import org.scalamock.stubs.*
 
 /** ============================================================================
   * MOCK-BASED TESTS — TransactionProcessor
@@ -61,29 +61,34 @@ import org.scalamock.scalatest.MockFactory
   *   val bob   = Account("acc-bob",   "Bob",   BigDecimal("500.00"),  AccountType.Savings)
   * ============================================================================
   */
-class TransactionProcessorSuite extends FunSuite with MockFactory:
+class TransactionProcessorSuite extends FunSuite, Stubs {
 
   // ==========================================================================
   // deposit
   // ==========================================================================
 
   // TEST: successful deposit returns Right and updates balance
-  // Purpose:  Happy path — all dependencies cooperate and the balance increases.
+  // Purpose: Happy path — all dependencies cooperate and the balance increases.
   // Setup:
   //   - mockRepo.findById("acc-alice") returns Some(alice)
-  //   - mockRepo.save expects an account with balance = 1000 + 200 = 1200, returns it
+  /* - mockRepo.save expects an account with balance = 1000 + 200 = 1200,
+   * returns it */
   //   - mockAudit.logTransaction expects exactly one call with any Transaction
-  //   - mockNotify.notifyDeposit expects exactly one call with the saved account and 200
-  //   - mockFraud is NOT called during a deposit (verify with .never() or just don't stub)
+  /* - mockNotify.notifyDeposit expects exactly one call with the saved account
+   * and 200 */
+  /* - mockFraud is NOT called during a deposit (verify with .never() or just
+   * don't stub) */
   // Assert:
   //   - result is Right(TransactionResult)
   //   - result.updatedAccount.balance == BigDecimal("1200.00")
   //   - result.transaction.transactionType == TransactionType.Deposit
   //   - result.transaction.amount == BigDecimal("200.00")
-  test("deposit: successful deposit returns Right and updates balance".fail) { ??? }
+  test("deposit: successful deposit returns Right and updates balance".fail) {
+    ???
+  }
 
   // TEST: deposit on nonexistent account returns AccountNotFound
-  // Purpose:  When the repo returns None, the processor must not save or notify.
+  // Purpose: When the repo returns None, the processor must not save or notify.
   // Setup:
   //   - mockRepo.findById("unknown") returns None
   //   - mockRepo.save expects NEVER (no save should happen)
@@ -99,7 +104,9 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - No mock expectations needed; no service should be called at all.
   // Assert:
   //   - result == Left(TransactionError.InvalidAmount)
-  test("deposit: zero amount returns InvalidAmount without touching repo".fail) { ??? }
+  test(
+    "deposit: zero amount returns InvalidAmount without touching repo".fail
+  ) { ??? }
 
   // TEST: deposit with negative amount returns InvalidAmount
   // Purpose:  Negative deposits are just as invalid as zero.
@@ -125,7 +132,9 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   // Assert:
   //   - result is Right(TransactionResult)
   //   - result.updatedAccount.balance == BigDecimal("700.00")
-  test("withdraw: successful withdrawal returns Right and deducts balance".fail) { ??? }
+  test(
+    "withdraw: successful withdrawal returns Right and deducts balance".fail
+  ) { ??? }
 
   // TEST: withdrawal with insufficient funds returns InsufficientFunds
   // Purpose:  Balance check fires after fraud check; no save or notification.
@@ -137,8 +146,11 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - mockAudit.logFailedAttempt expects once (reason contains "funds")
   //   - mockNotify.notifyWithdrawal expects NEVER
   // Assert:
-  //   - result == Left(TransactionError.InsufficientFunds("acc-alice", 1000, 1500))
-  test("withdraw: insufficient funds returns InsufficientFunds and logs failure".fail) { ??? }
+  /* - result == Left(TransactionError.InsufficientFunds("acc-alice", 1000,
+   * 1500)) */
+  test(
+    "withdraw: insufficient funds returns InsufficientFunds and logs failure".fail
+  ) { ??? }
 
   // TEST: withdrawal flagged as fraud returns FraudDetected
   // Purpose:  Fraud check fires before the balance check; save must not occur.
@@ -151,7 +163,9 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - mockNotify.notifyWithdrawal expects NEVER
   // Assert:
   //   - result == Left(TransactionError.FraudDetected("acc-alice"))
-  test("withdraw: fraud flag returns FraudDetected and sends fraud alert".fail) { ??? }
+  test(
+    "withdraw: fraud flag returns FraudDetected and sends fraud alert".fail
+  ) { ??? }
 
   // TEST: fraud check is skipped when account does not exist
   // Purpose:  AccountNotFound must be returned immediately; fraud service must
@@ -167,7 +181,9 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   // Purpose:  Guard clause fires before any repo or fraud lookup.
   // Setup:    No mock expectations on any service.
   // Assert:   result == Left(TransactionError.InvalidAmount)
-  test("withdraw: zero amount returns InvalidAmount without touching any service".fail) { ??? }
+  test(
+    "withdraw: zero amount returns InvalidAmount without touching any service".fail
+  ) { ??? }
 
   // ==========================================================================
   // transfer
@@ -187,8 +203,11 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   // Assert:
   //   - result is Right(TransactionResult)
   //   - result.updatedAccount.balance   == BigDecimal("600.00")  (alice)
-  //   - result.relatedAccount is Some(_) with balance == BigDecimal("900.00") (bob)
-  test("transfer: successful transfer debits source and credits destination".fail) { ??? }
+  /* - result.relatedAccount is Some(_) with balance == BigDecimal("900.00")
+   * (bob) */
+  test(
+    "transfer: successful transfer debits source and credits destination".fail
+  ) { ??? }
 
   // TEST: transfer from nonexistent source returns AccountNotFound
   // Purpose:  The first repo lookup fails; no further action is taken.
@@ -199,7 +218,9 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - mockAudit.logFailedAttempt expects NEVER
   // Assert:
   //   - result == Left(TransactionError.AccountNotFound("unknown"))
-  test("transfer: source account not found returns AccountNotFound".fail) { ??? }
+  test("transfer: source account not found returns AccountNotFound".fail) {
+    ???
+  }
 
   // TEST: transfer to nonexistent destination returns AccountNotFound
   // Purpose:  Source exists but destination lookup returns None.
@@ -209,7 +230,9 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - mockRepo.save expects NEVER
   // Assert:
   //   - result == Left(TransactionError.AccountNotFound("unknown"))
-  test("transfer: destination account not found returns AccountNotFound".fail) { ??? }
+  test("transfer: destination account not found returns AccountNotFound".fail) {
+    ???
+  }
 
   // TEST: transfer with insufficient funds in source returns InsufficientFunds
   // Purpose:  Balance check for the source fires after the fraud check.
@@ -220,8 +243,11 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - mockRepo.save expects NEVER
   //   - mockAudit.logFailedAttempt expects once
   // Assert:
-  //   - result == Left(TransactionError.InsufficientFunds("acc-alice", 1000, 2000))
-  test("transfer: insufficient funds in source returns InsufficientFunds".fail) { ??? }
+  /* - result == Left(TransactionError.InsufficientFunds("acc-alice", 1000,
+   * 2000)) */
+  test(
+    "transfer: insufficient funds in source returns InsufficientFunds".fail
+  ) { ??? }
 
   // TEST: transfer flagged as fraud halts before any save
   // Purpose:  Fraud on the source account stops the entire transfer.
@@ -232,10 +258,13 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   //   - mockAudit.logFailedAttempt expects once
   // Assert:
   //   - result == Left(TransactionError.FraudDetected("acc-alice"))
-  test("transfer: fraud on source returns FraudDetected and does not save".fail) { ??? }
+  test(
+    "transfer: fraud on source returns FraudDetected and does not save".fail
+  ) { ??? }
 
   // TEST: transfer to self (fromId == toId) returns InvalidAmount
-  // Purpose:  Self-transfers are rejected by the guard clause without any lookup.
+  /* Purpose: Self-transfers are rejected by the guard clause without any
+   * lookup. */
   // Setup:    No mock expectations on any service.
   // Assert:   result == Left(TransactionError.InvalidAmount)
   test("transfer: self-transfer returns InvalidAmount".fail) { ??? }
@@ -256,11 +285,15 @@ class TransactionProcessorSuite extends FunSuite with MockFactory:
   // Setup:    Same as the successful deposit test.
   //           Use .expects(*).once() on mockAudit.logTransaction.
   // Assert:   ScalaMock verifies the expectation automatically after the test.
-  test("deposit: audit logger receives exactly one logTransaction call".fail) { ??? }
+  test("deposit: audit logger receives exactly one logTransaction call".fail) {
+    ???
+  }
 
   // TEST: notification service is never called when deposit finds no account
-  // Purpose:  Negative interaction test — ensures no spurious notifications fire.
+  /* Purpose: Negative interaction test — ensures no spurious notifications
+   * fire. */
   // Setup:    mockRepo.findById returns None.
   //           mockNotify.notifyDeposit expects NEVER (use .expects(*).never()).
   // Assert:   ScalaMock verifies; result is also Left(AccountNotFound).
   test("deposit: no notification fired when account is not found".fail) { ??? }
+}
