@@ -1,9 +1,6 @@
 package edu.uic.banking
 
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop.forAll
-import org.scalacheck.Gen
-import org.scalacheck.Arbitrary
 
 /** ============================================================================
   * PROPERTY-BASED TESTS — InterestCalculator, FeeCalculator, TransactionProcessor
@@ -73,7 +70,7 @@ import org.scalacheck.Arbitrary
   *   yield Account(id, owner, balance, atype)
   * ============================================================================
   */
-class BankingPropertySuite extends ScalaCheckSuite:
+class BankingPropertySuite extends ScalaCheckSuite {
 
   // ==========================================================================
   // InterestCalculator properties
@@ -139,7 +136,9 @@ class BankingPropertySuite extends ScalaCheckSuite:
   //             n1 < n2 => compoundInterest(..., n1) <= compoundInterest(..., n2)
   // Generator: positiveBigDecimal, ratePct (> 0), years,
   //            Gen.choose(1, 364) for n1, then n2 = n1 + 1 (or pick from ordered list)
-  property("compoundInterest: higher compounding frequency yields >= interest") {
+  property(
+    "compoundInterest: higher compounding frequency yields >= interest"
+  ) {
     ???
   }
 
@@ -207,7 +206,8 @@ class BankingPropertySuite extends ScalaCheckSuite:
   // PROPERTY: overdraftPenalty is monotonically increasing
   // Law:      For all 0 < a <= b:
   //             overdraftPenalty(a) <= overdraftPenalty(b)
-  // Generator: Two positive BigDecimals; use Gen.zip or suchThat to ensure a <= b
+  /* Generator: Two positive BigDecimals; use Gen.zip or suchThat to ensure a <=
+   * b */
   property("overdraftPenalty: larger overdraft incurs larger penalty") {
     ???
   }
@@ -239,7 +239,8 @@ class BankingPropertySuite extends ScalaCheckSuite:
   //   class InMemoryAccountRepository extends AccountRepository:
   //     private var store = Map.empty[String, Account]
   //     def findById(id: String): Option[Account]   = store.get(id)
-  //     def save(account: Account): Account         = { store = store + (account.id -> account); account }
+  /* def save(account: Account): Account = { store = store + (account.id ->
+   * account); account } */
   //     def exists(id: String): Boolean             = store.contains(id)
   //
   // Then stub all side-effecting mocks to do nothing:
@@ -252,7 +253,8 @@ class BankingPropertySuite extends ScalaCheckSuite:
   //             deposit(account.id, amount) returns Right(_)  AND
   //             result.updatedAccount.balance == account.balance + amount
   // Generator: account (nonNegative balance), positiveBigDecimal for amount
-  // Mock setup: fraud.isSuspicious stubbed to return false (unused for deposits)
+  /* Mock setup: fraud.isSuspicious stubbed to return false (unused for
+   * deposits) */
   property("deposit: balance after deposit equals initial balance + amount") {
     ???
   }
@@ -261,14 +263,18 @@ class BankingPropertySuite extends ScalaCheckSuite:
   // Law:      For all account (balance > 0), amount in (0, balance]:
   //             withdraw(account.id, amount) returns Right(_)  AND
   //             result.updatedAccount.balance == account.balance - amount
-  // Generator: account, then amount = Gen.choose(1, balance.toInt).map(BigDecimal(_))
+  /* Generator: account, then amount = Gen.choose(1,
+   * balance.toInt).map(BigDecimal(_)) */
   // Mock setup: fraud.isSuspicious stubbed to return false
-  property("withdraw: balance after withdrawal equals initial balance - amount") {
+  property(
+    "withdraw: balance after withdrawal equals initial balance - amount"
+  ) {
     ???
   }
 
   // PROPERTY: transfer is balance-conserving (zero-sum across both accounts)
-  // Law:      For all accountA, accountB (distinct ids), amount in (0, accountA.balance]:
+  /* Law: For all accountA, accountB (distinct ids), amount in (0,
+   * accountA.balance]: */
   //             transfer(accountA.id, accountB.id, amount) returns Right(_)  AND
   //             result.updatedAccount.balance + result.relatedAccount.get.balance
   //               == accountA.balance + accountB.balance
@@ -300,3 +306,4 @@ class BankingPropertySuite extends ScalaCheckSuite:
   property("withdraw: fraud-rejected withdrawal leaves balance unchanged") {
     ???
   }
+}
