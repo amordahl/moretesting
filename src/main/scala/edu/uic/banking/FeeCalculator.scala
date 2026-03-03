@@ -34,7 +34,10 @@ object FeeCalculator {
     * @return
     *   Fee in the range [MinFee, MaxFee]
     */
-  def transactionFee(amount: BigDecimal, accountType: AccountType): BigDecimal = {
+  def transactionFee(
+      amount: BigDecimal,
+      accountType: AccountType
+  ): BigDecimal = {
     val rate = accountType match {
       case AccountType.Checking => CheckingFeeRate
       case AccountType.Savings  => SavingsFeeRate
@@ -70,7 +73,10 @@ object FeeCalculator {
     * @return
     *   Monthly fee owed (may be zero)
     */
-  def monthlyMaintenanceFee(accountType: AccountType, balance: BigDecimal): BigDecimal =
+  def monthlyMaintenanceFee(
+      accountType: AccountType,
+      balance: BigDecimal
+  ): BigDecimal =
     accountType match {
       case AccountType.Checking =>
         if balance >= CheckingMaintenanceWaiver then BigDecimal(0)

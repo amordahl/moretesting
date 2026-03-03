@@ -83,8 +83,37 @@ class TransactionProcessorSuite extends FunSuite, Stubs {
   //   - result.updatedAccount.balance == BigDecimal("1200.00")
   //   - result.transaction.transactionType == TransactionType.Deposit
   //   - result.transaction.amount == BigDecimal("200.00")
-  test("deposit: successful deposit returns Right and updates balance".fail) {
-    ???
+  test("deposit: successful deposit returns Right and updates balance") {
+    val mockRepo   = stub[AccountRepository]
+    val mockAudit  = stub[AuditLogger]
+    val mockNotify = stub[NotificationService]
+    val mockFraud  = stub[FraudDetectionService]
+
+    val accountName = "acc-alice"
+    val account =
+      Account(accountName, "Alice", BigDecimal(1000), AccountType.Checking)
+    mockRepo.findById.returns(s =>
+      s match {
+        case `accountName` => Some(account)
+        case _             => None
+      }
+    )
+    mockAudit.logTransaction.returnsWith(())
+    mockNotify.notifyDeposit.returnsWith(())
+
+    val augAccount = account.copy(balance = BigDecimal(300))
+    mockRepo.save.returns {
+      case `augAccount` => augAccount
+      case _            => ???
+    }
+    val transactionProcessor =
+      TransactionProcessor(mockRepo, mockNotify, mockAudit, mockFraud)
+
+    // Act
+    val acc = transactionProcessor.deposit(accountName, BigDecimal(200))
+
+    // Assert
+    assert(acc.isRight)
   }
 
   // TEST: deposit on nonexistent account returns AccountNotFound

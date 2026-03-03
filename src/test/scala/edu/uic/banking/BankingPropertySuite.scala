@@ -1,6 +1,8 @@
 package edu.uic.banking
 
 import munit.ScalaCheckSuite
+import org.scalacheck.Gen
+import org.scalacheck.Prop.*
 
 /** ============================================================================
   * PROPERTY-BASED TESTS — InterestCalculator, FeeCalculator, TransactionProcessor
@@ -82,8 +84,25 @@ class BankingPropertySuite extends ScalaCheckSuite {
   // Generator: positiveBigDecimal for principal, ratePct for rate, years gen
   // Why it matters: A negative interest result would indicate a sign error
   //                 in the formula.
+
+  val positiveBigDecimal: Gen[BigDecimal] =
+    Gen.choose[BigDecimal](0, 1_000_000).map(bd => bd / 100)
+  val ratePct: Gen[BigDecimal] =
+    Gen.choose[BigDecimal](0, 10000).map(bd => bd / 100)
+  val years: Gen[Int] = Gen.choose(0, 30)
+
   property("simpleInterest: result is non-negative for valid inputs") {
-    ???
+    forAll(positiveBigDecimal, ratePct, years) {
+      (positiveBigDecimal, ratePct, years) =>
+        println(
+          s"Positive big decimal: ${positiveBigDecimal}\nratePct: ${ratePct}\nyears: ${years}"
+        )
+        assert(InterestCalculator.simpleInterest(
+          positiveBigDecimal,
+          ratePct,
+          years
+        ) >= 1)
+    }
   }
 
   // PROPERTY: simple interest is zero when principal is zero
@@ -91,7 +110,12 @@ class BankingPropertySuite extends ScalaCheckSuite {
   //             simpleInterest(0, rate, years) == 0
   // Generator: ratePct, years
   property("simpleInterest: zero principal always produces zero interest") {
-    ???
+    forAll(ratePct, years) { (rp, years) =>
+      assertEquals(
+        InterestCalculator.simpleInterest(BigDecimal(0), rp, years),
+        BigDecimal(0)
+      )
+    }
   }
 
   // PROPERTY: simple interest is zero when rate is zero
@@ -224,6 +248,12 @@ class BankingPropertySuite extends ScalaCheckSuite {
   // Law:      For all accountType, balance >= 0:
   //             monthlyMaintenanceFee(accountType, balance) >= 0
   // Generator: accountType, nonNegativeBigDecimal
+  val accountType: Gen[AccountType] =
+    Gen.frequency(
+      (1, AccountType.Checking),
+      (1, AccountType.Savings),
+      (3, AccountType.Premium)
+    )
   property("monthlyMaintenanceFee: result is always non-negative") {
     ???
   }

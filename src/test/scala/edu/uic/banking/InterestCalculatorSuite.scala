@@ -35,6 +35,7 @@ import munit.FunSuite
   * assertEquals when comparing those results.
   * ============================================================================
   */
+// https://github.com/amordahl/moretesting
 class InterestCalculatorSuite extends FunSuite {
 
   // --------------------------------------------------------------------------
@@ -46,15 +47,38 @@ class InterestCalculatorSuite extends FunSuite {
   //           of rate or years.
   // Setup:    principal = 0, annualRatePct = 5, years = 3
   // Assert:   result == BigDecimal(0)
-  test("simpleInterest: zero principal yields zero interest".fail) { ??? }
+  test("simpleInterest: zero principal yields zero interest") {
+    // Arrange, Act, Assert
+    // Arrange
+    val principal     = BigDecimal(0)
+    val annualRatePct = BigDecimal(5)
+    val years         = 3
+
+    // Act
+    val result =
+      InterestCalculator.simpleInterest(principal, annualRatePct, years)
+
+    // Assert
+    assertEquals(result, BigDecimal(0))
+  }
 
   // TEST: zero rate yields zero interest
   /* Purpose: A 0% rate means no money is earned regardless of principal or
    * time. */
   // Setup:    principal = 1000, annualRatePct = 0, years = 5
   // Assert:   result == BigDecimal(0)
-  test("simpleInterest: zero rate yields zero interest".fail) {
-    ???
+  test("simpleInterest: zero rate yields zero interest") {
+    // Arrange
+    val principal     = BigDecimal(1000)
+    val annualRatePct = BigDecimal(0)
+    val years         = 5
+
+    // Act
+    val result =
+      InterestCalculator.simpleInterest(principal, annualRatePct, years)
+
+    // Assert
+    assertEquals(result, BigDecimal(0))
   }
 
   // TEST: known values produce expected interest
