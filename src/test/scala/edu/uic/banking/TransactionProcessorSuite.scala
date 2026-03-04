@@ -24,34 +24,33 @@ import org.scalamock.stubs.*
   *
   * TOOLS NEEDED
   * ------------
-  *   import org.scalamock.scalatest.MockFactory   // provides mock[T]
+  *   import org.scalamock.stubs.*.                // provides stub[T]
   *   munit.FunSuite                               // provides test() / assert*
   *
   * SCALAMOCK QUICK REFERENCE
   * -------------------------
-  *   val mockRepo = mock[AccountRepository]
+  *   val mockRepo = stub[AccountRepository]
   *
   *   // Stub a return value (called any number of times):
-  *   (mockRepo.findById _).stubs("acc-1").returning(Some(account))
+  *   mockRepo.findById.returns:
+  *    case "acc-alice" => Some(account)
   *
   *   // Expect exactly one call with specific arguments:
-  *   (mockRepo.save _).expects(updatedAccount).returning(updatedAccount).once()
+  *   assertEquals(mockRepo.save.calls, List(updatedAccount))
+  *   assertEquals(mockRepo.save.times, 1)
   *
   *   // Expect a method is NEVER called:
-  *   (mockRepo.save _).expects(*).never()
-  *
-  *   // Expect a Unit method is called once (no return value to set):
-  *   (mockAudit.logTransaction _).expects(*).once()
+  *   assertEquals(mockRepo.save.times, 0)
   *
   * SHARED FIXTURE (add a beforeEach or helper method)
   * ---------------------------------------------------
   * All tests need mocks + a processor instance.  Consider extracting:
   *
   *   def fixtures() =
-  *     val repo   = mock[AccountRepository]
-  *     val notify = mock[NotificationService]
-  *     val audit  = mock[AuditLogger]
-  *     val fraud  = mock[FraudDetectionService]
+  *     val repo   = stub[AccountRepository]
+  *     val notify = stub[NotificationService]
+  *     val audit  = stub[AuditLogger]
+  *     val fraud  = stub[FraudDetectionService]
   *     val proc   = TransactionProcessor(repo, notify, audit, fraud)
   *     (repo, notify, audit, fraud, proc)
   *
